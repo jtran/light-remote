@@ -15,7 +15,7 @@ class LightRemote
   # Sends RGB value in range [0, 1] to light.
   def send_light(r, g, b)
     #puts "sending #{r}, #{g}, #{b}"
-    m = OSC::Message.new('/foo', 'fff', r, g, b)
+    m = OSC::Message.new('/light/color/set', 'fff', r, g, b)
     @osc.send(m, 0, @host, @port)
   end
 
