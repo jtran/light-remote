@@ -1,10 +1,11 @@
-Controls lights made by [saikoLED](http://saikoled.com/) which have an 802.11b WiFi card.
+Controls lights made by [saikoLED](http://saikoled.com/) which have an 802.11b WiFi card. These
+lights run using an Arduino Uno and use all open source software and open standards.
 
 # Install
 
-gem dependencies
-- serialport
-- rosc
+Install gem dependencies.
+
+`gem install serialport rosc`
 
 # Use
 
