@@ -23,6 +23,7 @@ class LightRemote
 
   # Fades light linearly between two RGB values.
   def fade(r1, g1, b1, r2, g2, b2, steps=10)
+    raise "steps must be greater than zero" unless steps > 0
     d_r = (r2 - r1) / steps
     d_g = (g2 - g1) / steps
     d_b = (b2 - b1) / steps
@@ -69,7 +70,11 @@ while true do
   f = 0.1 + 0.9 * rand
   nxt = [r * f, g * f, 0]
 
-  l.fade(*(cur + nxt))
+  # Vary the transition speed.  Very slow with an occasional flick.
+  x = rand(10) + 1
+  steps = x > 3 ? 10*x : x
+
+  l.fade(*(cur + nxt + [steps]))
 #  STDIN.readline   # uncomment this to pause each iteration.
   cur = nxt
 end
