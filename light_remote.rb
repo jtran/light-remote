@@ -23,9 +23,9 @@ class LightRemote
   # Fades light linearly between two RGB values.
   def fade(r1, g1, b1, r2, g2, b2, steps=10)
     raise "steps must be greater than zero" unless steps > 0
-    d_r = (r2 - r1) / steps
-    d_g = (g2 - g1) / steps
-    d_b = (b2 - b1) / steps
+    d_r = (r2 - r1).to_f / steps
+    d_g = (g2 - g1).to_f / steps
+    d_b = (b2 - b1).to_f / steps
     steps.times do |s|
       r = r1 + d_r * s
       g = g1 + d_g * s
