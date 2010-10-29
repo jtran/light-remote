@@ -2,7 +2,7 @@
 require 'rubygems'
 require 'light_remote'
 
-l = LightRemote.new(ARGV[0] || '192.168.1.162', 2222, false)
+l = LightRemote.new(ARGV[0] || '192.168.1.162', false)
 p l
 
 # This loop makes a smooth-fading fire.  (A bit too smooth.)

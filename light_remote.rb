@@ -5,9 +5,10 @@ class LightRemote
 
   attr_accessor :host, :port, :osc
 
-  def initialize(host, port, use_serial=true)
+  def initialize(host, use_serial, options={})
+    options = { :port => 2222 }.merge(options)
     @host = host
-    @port = port
+    @port = options[:port]
     @sp = SerialPort.new("/dev/tty.usbserial-A600akVG", 19200) if use_serial
     @osc = OSC::UDPSocket.new
   end
