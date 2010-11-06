@@ -2,8 +2,11 @@
 require 'rubygems'
 require 'light_remote'
 
-l = LightRemote.new(ARGV[0] || '192.168.1.162', false)
-p l
+l = LightRemote.new(!ARGV[0].nil? && ARGV[0] != '' ? ARGV[0] : '192.168.1.162', false)
+
+run_until = ARGV.size >= 3
+Hour = ARGV[1].to_i
+Min  = ARGV[2].to_i
 
 # This loop makes a smooth-fading fire.  (A bit too smooth.)
 # TODO: Add some flicker.
@@ -24,4 +27,9 @@ while true do
   l.fade(*(cur + nxt + [steps]))
 #  STDIN.readline   # uncomment this to pause each iteration.
   cur = nxt
+
+  if run_until
+    t = Time.now
+    break if t.hour == Hour && t.min == Min
+  end
 end
