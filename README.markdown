@@ -1,5 +1,6 @@
 Controls lights made by [saikoLED](http://saikoled.com/) which have an 802.11b WiFi card. These
-lights run using an Arduino Uno and use all open source software and open standards.
+lights run using an Arduino Uno and use all [open source
+software](http://github.com/saikoLED/saiko5) and open standards.
 
 # Install
 
