@@ -1,7 +1,7 @@
 require 'serialport'
 require 'osc'
 
-class LightRemote
+class LightRemote::Light
 
   attr_accessor :host, :port, :osc
 

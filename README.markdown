@@ -10,8 +10,8 @@ Install gem dependencies.
 
 # Use
 
-Execute one of the "run" files with the IP address of the light.
+Execute one of the "run" files.
 
-`./run_flame 192.168.1.3`
+`./run_scene_home.rb`
 
 Send interrupt to quit.
