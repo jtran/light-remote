@@ -24,13 +24,17 @@ class LightRemote::Light
     d_r = (r2 - r1).to_f / steps
     d_g = (g2 - g1).to_f / steps
     d_b = (b2 - b1).to_f / steps
-    steps.times do |s|
+    (steps - 1).times do |s|
       r = r1 + d_r * s
       g = g1 + d_g * s
       b = b1 + d_b * s
       send_light(r, g, b)
       sleep(0.02)
     end
+    # Do last step separately so that rounding errors don't prevent us from
+    # ending on the correct RGB.
+    send_light(r2, g2, b2)
+    sleep(0.02)
   end
 
 end
