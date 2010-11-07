@@ -91,6 +91,12 @@ class LightRemote::Dsl
     now < t
   end
 
+  def flame_until(*time_args)
+    run_until_callback = lambda {|r,g,b| before(*time_args) }
+    # TODO: change Flame module to use multiple lights.
+    LightRemote::Flame.new(current_lights.first, run_until_callback).run(last_rgb)
+  end
+
   def fade_out
     fade_to(0, 0, 0)
   end
