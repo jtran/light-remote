@@ -1,15 +1,13 @@
-require 'serialport'
 require 'osc'
 
 class LightRemote::Light
 
   attr_accessor :host, :port, :osc
 
-  def initialize(host, use_serial, options={})
+  def initialize(host, options={})
     options = { :port => 2222 }.merge(options)
     @host = host
     @port = options[:port]
-    @sp = SerialPort.new("/dev/tty.usbserial-A600akVG", 19200) if use_serial
     @osc = OSC::UDPSocket.new
   end
 
@@ -32,23 +30,6 @@ class LightRemote::Light
       b = b1 + d_b * s
       send_light(r, g, b)
       sleep(0.02)
-    end
-  end
-
-  # Reads comma-separated triple from sensor.
-  def read_triple
-    line = @sp.readline
-    puts line
-    vals = line.split(',')
-    return nil if vals.nil? || vals.size != 3
-    vals.map(&:to_i)
-  end
-
-  # Loops forever sending sensor input to light.
-  def run
-    while true do
-      triple = read_triple
-      send_light(*triple.map {|v| v / 400.0 }) if triple
     end
   end
 

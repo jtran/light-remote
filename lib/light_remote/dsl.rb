@@ -11,7 +11,7 @@ class LightRemote::Dsl
 
   def for_light(*ips)
     ips = ips.is_a?(Array) ? ips : [ips]
-    @ctx << ips.map {|ip| LightRemote::Light.new(ip, false) }
+    @ctx << ips.map {|ip| LightRemote::Light.new(ip) }
     begin
       yield(self)
     ensure
