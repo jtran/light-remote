@@ -57,9 +57,9 @@ class HomeScene
       puts 'wake up'
       dsl.fade_to(0, 0.667, 1)  # sky blue
       dsl.wait_until('12:00')
-    elsif dsl.before('18:00')
+    elsif dsl.before('16:30')
       puts 'off in day'
-      dsl.fade_out.wait_until('18:00')
+      dsl.fade_out.wait_until('16:30')
     elsif dsl.before('21:00')
       puts 'white'
       dsl.fade_to(1, 0.6, 0.082)  # white light, a little soft
