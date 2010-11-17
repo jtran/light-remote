@@ -34,10 +34,15 @@ class LightRemote::Dsl
     self
   end
 
-  def fade_to(r, g, b)
+  # fade_to(0, 0, 0, :in => 5) fades to black over 5 seconds.
+  def fade_to(r, g, b, options={})
+    options = { :steps => 20 }.merge(options)
+    seconds_per_step = 0.02
+    steps = options[:in] ? options[:in] / seconds_per_step : options[:steps]
+    steps = steps.to_i
     current_lights.each do |l|
       r0, g0, b0 = @last_rgb_of_host[l.host] || [0, 0, 0]
-      l.fade(r0, g0, b0, r, g, b)
+      l.fade(r0, g0, b0, r, g, b, steps)
       @last_rgb_of_host[l.host] = [r, g, b]
       @last_host = l.host
     end
