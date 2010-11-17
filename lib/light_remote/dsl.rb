@@ -3,10 +3,12 @@ require 'light_remote'
 # A DSL to make controlling Lights a little easier.
 class LightRemote::Dsl
 
-  def initialize
+  def initialize(ips=[])
     @ctx = []
     @last_rgb_of_host = {}
     @last_host = nil
+    ips = ips.is_a?(Array) ? ips : [ips]
+    @ctx << ips.map {|ip| LightRemote::Light.new(ip) } if ! ips.empty?
   end
 
   def for_light(*ips)
