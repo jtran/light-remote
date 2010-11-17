@@ -41,7 +41,8 @@ class HomeScene
       dsl.flame_until('23:00')
     else
       puts 'off at night'
-      dsl.fade_out.wait_until('0:00')
+      t = Time.now + 60*60*24
+      dsl.fade_out.wait_until(Time.local(t.year, t.month, t.day))
     end
   end
 
@@ -65,7 +66,8 @@ class HomeScene
       dsl.wait_until('21:00')
     elsif dsl.before('23:00')
       puts 'flame'
-      dsl.flame_until('0:00')
+      t = Time.now + 60*60*24
+      dsl.fade_out.wait_until(Time.local(t.year, t.month, t.day))
     end
   end
 
