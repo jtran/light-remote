@@ -64,10 +64,10 @@ class HomeScene
       puts 'white'
       dsl.fade_to(1, 0.6, 0.082)  # white light, a little soft
       dsl.wait_until('21:00')
-    elsif dsl.before('23:00')
-      puts 'flame'
+    else
+      puts 'flame at night'
       t = Time.now + 60*60*24
-      dsl.fade_out.wait_until(Time.local(t.year, t.month, t.day))
+      dsl.flame_until(Time.local(t.year, t.month, t.day))
     end
   end
 
