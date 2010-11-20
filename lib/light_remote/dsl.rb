@@ -7,6 +7,7 @@ class LightRemote::Dsl
     @ctx = []
     @last_rgb_of_host = {}
     @last_host = nil
+    @time_offset = 0
     ips = ips.is_a?(Array) ? ips : [ips]
     @ctx << ips.map {|ip| LightRemote::Light.new(ip) } if ! ips.empty?
   end
@@ -55,6 +56,14 @@ class LightRemote::Dsl
     @last_rgb_of_host[host || @last_host]
   end
 
+  def time
+    Time.now + @time_offset
+  end
+
+  def pretend_time(time)
+    @time_offset = time - Time.now
+  end
+
   def wait(duration_in_seconds)
     sleep(duration_in_seconds)
     self
@@ -62,7 +71,8 @@ class LightRemote::Dsl
 
   def wait_until(time_or_hour, minute=nil)
     t = parse_time(time_or_hour, minute, true)
-    wait(t - Time.now)
+    #puts "#{time.inspect} --- #{time_or_hour} ==> #{t.inspect}"
+    wait(t - time)
   end
 
   # Returns boolean whether the current time is between the two given times.
@@ -86,14 +96,14 @@ class LightRemote::Dsl
     else
       raise "between_time requires 2, 3, or 4 arguments, but you gave #{args.inspect}"
     end
-    now = Time.now
+    now = time
     #puts "#{now.inspect} between #{t1.inspect} and #{t2.inspect} == #{t1 <= now && now < t2}"
     t1 <= now && now < t2
   end
 
   def before(*args)
     t = parse_time(*args)
-    now = Time.now
+    now = time
     #puts "#{now.inspect} before #{t.inspect} == #{now < t}"
     now < t
   end
@@ -125,12 +135,12 @@ class LightRemote::Dsl
     elsif time_or_hour.is_a?(String) && minute.nil?
       # Time.parse(time_or_hour)  # only in Ruby 1.9
       h, m = time_or_hour.split(/:/)
-      now = Time.now
+      now = time
       t = Time.local(now.year, now.month, now.day, h, m)
       !adjust_to_future || t >= now ? t : t + 60*60*24  # Add a day if it is before now.
     else
       # Time.parse(time_or_hour + ':' + minute)  # only in Ruby 1.9
-      now = Time.now
+      now = time
       t = Time.local(now.year, now.month, now.day, time_or_hour, minute)
       !adjust_to_future || t >= now ? t : t + 60*60*24  # Add a day if it is before now.
     end
