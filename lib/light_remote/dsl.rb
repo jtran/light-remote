@@ -110,13 +110,22 @@ class LightRemote::Dsl
 
   def flame(callback=nil)
     # TODO: change Flame module to use multiple lights.
-    LightRemote::Flame.new(current_lights.first, callback).run(last_rgb)
+    light = current_lights.first
+    wrapped_callback = lambda {|r,g,b|
+      @last_rgb_of_host[light.host] = [r, g, b]
+      callback ? callback.call(r, g, b) : true
+    }
+    LightRemote::Flame.new(light, wrapped_callback).run(last_rgb)
     self
   end
 
   def flame_until(*time_args)
-    run_until_callback = lambda {|r,g,b| before(*time_args) }
     # TODO: change Flame module to use multiple lights.
+    light = current_lights.first
+    run_until_callback = lambda {|r,g,b|
+      @last_rgb_of_host[light.host] = [r, g, b]
+      before(*time_args)
+    }
     LightRemote::Flame.new(current_lights.first, run_until_callback).run(last_rgb)
     self
   end
