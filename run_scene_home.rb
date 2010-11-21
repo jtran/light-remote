@@ -6,7 +6,7 @@ require 'sinatra'
 class SceneHome
   attr_accessor :state
 
-  STATES = [:off, :wake, :flame]
+  STATES = [:off, :wake, :white, :flame]
 
   def initialize
     @state = :init
@@ -27,6 +27,8 @@ class SceneHome
       @dsl.fade_out
     when :wake
       @dsl.fade_to(0, 0.667, 1, :in => 60 * 15)  # sky blue, in 15 minutes
+    when :white
+      @dsl.fade_to(1, 0.6, 0.082)  # white light, a little soft
     when :flame
       @dsl.flame
     end
@@ -39,11 +41,15 @@ class SceneHome
     when :off
       [ [lambda { @dsl.time.weekend? && 10 == @dsl.time.hour }, :wake],
         [lambda { @dsl.time.weekday? && 6 == @dsl.time.hour && 15 <= @dsl.time.min }, :wake],
-        [lambda { 21 <= @dsl.time.hour }, :flame],
+        [lambda { 4 <= @dsl.time.hour }, :white],
       ]
     when :wake
       [ [lambda { @dsl.time.weekend? && 12 <= @dsl.time.hour }, :off],
         [lambda { @dsl.time.weekday? && 9 <= @dsl.time.hour }, :off],
+      ]
+    when :white
+      [ [lambda { 21 <= @dsl.time.hour }, :flame],
+        [lambda { @dsl.time.weekend? && @dsl.time.hour < 1 }, :flame],
       ]
     when :flame
       [ [lambda { @dsl.time.weekend? && 1 <= @dsl.time.hour && @dsl.time.hour < 10 }, :off],
