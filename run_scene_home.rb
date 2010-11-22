@@ -56,12 +56,11 @@ class SceneHome
         [lambda { @dsl.time.weekend? && @dsl.time.hour < 1 }, :flame],
       ]
     when :flame
-      [ [lambda { @dsl.time.weekend? && 1 <= @dsl.time.hour && @dsl.time.hour < 10 }, :off_till_morning],
+      [ [lambda { @dsl.time.weekend? && 1 <= @dsl.time.hour && @dsl.time.hour < 10 }, :off],
         [lambda { @dsl.time.weekday? && 23 <= @dsl.time.hour }, :off_till_morning],
       ]
     when :off_till_morning
-      today = @dsl.time
-      [ [lambda { @dsl.time.day != today.day }, :off] ]
+      [ [lambda { @dsl.time.hour == 0 }, :off] ]
     else
       []
     end
