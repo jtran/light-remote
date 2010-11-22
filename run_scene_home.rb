@@ -11,6 +11,8 @@ class SceneHome
   def initialize
     @state = :init
     @dsl = LightRemote::Dsl.new('192.168.1.162')
+    @queued_state = nil
+    @hold_until = nil
   end
 
   def run
@@ -67,35 +69,42 @@ class SceneHome
 
   def updater
     while true
-      new_state = @state
-
-      if @queued_state
-        # A new state was set by the user.
-        new_state = @queued_state
-        @queued_state = nil
-      else
-        # Try to transition to new state based on any triggers.
-        triggers_for_state.each do |trigger_fn, transition_to_state|
-          next unless trigger_fn.call
-          new_state = if transition_to_state.is_a?(Proc)
-                        transition_to_state.call(self)
-                      else
-                        transition_to_state
-                      end
-          break
-        end
-      end
-
-      # Switch states.
-      if @state != new_state
-        Thread.kill(@last_thread) if @last_thread
-        @state = new_state
-        # Trigger in a new thread so that long-running operations do not affect updating state.
-        @last_thread = Thread.start { run_state }
-      end
+      transition_states if ! holding?
 
       # Sleep for a little.
       sleep(30)
+    end
+  end
+
+  def transition_states
+    new_state = @state
+
+    if @queued_state
+      # A new state was set by the user.
+      new_state = @queued_state
+      @queued_state = nil
+
+      # If a state is set by user, hold there for 150 minutes.
+      @hold_until = @dsl.time + 60 * 150
+    else
+      # Try to transition to new state based on any triggers.
+      triggers_for_state.each do |trigger_fn, transition_to_state|
+        next unless trigger_fn.call
+        new_state = if transition_to_state.is_a?(Proc)
+                      transition_to_state.call(self)
+                    else
+                      transition_to_state
+                    end
+        break
+      end
+    end
+
+    # Switch states.
+    if @state != new_state
+      Thread.kill(@last_thread) if @last_thread
+      @state = new_state
+      # Trigger in a new thread so that long-running operations do not affect updating state.
+      @last_thread = Thread.start { run_state }
     end
   end
 
@@ -104,6 +113,15 @@ class SceneHome
     return nil unless STATES.map(&:to_s).include?(state.to_s)
 
     @queued_state = state.to_sym
+    stop_holding
+  end
+
+  def holding?
+    @hold_until && @dsl.time < @hold_until
+  end
+
+  def stop_holding
+    @hold_until = nil
   end
 
 end
