@@ -117,7 +117,7 @@ get '/' do
 <title>Scene Home</title>
 <style type="text/css">
 html {font-family: sans-serif;}
-input {font-size: xx-large; text-transform: capitalize; padding: 1.5em; margin: 0.5em; min-width: 10em;}
+input {font-size: xx-large; text-transform: capitalize; padding: 1.5em; margin: 0.5em; min-width: 10em; -webkit-appearance: button;}
 </style>
 </head>
 <body>
