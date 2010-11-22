@@ -41,7 +41,7 @@ class SceneHome
     when :off
       [ [lambda { @dsl.time.weekend? && 10 == @dsl.time.hour }, :wake],
         [lambda { @dsl.time.weekday? && 6 == @dsl.time.hour && 15 <= @dsl.time.min }, :wake],
-        [lambda { 4 <= @dsl.time.hour }, :white],
+        [lambda { 16 <= @dsl.time.hour }, :white],
       ]
     when :wake
       [ [lambda { @dsl.time.weekend? && 12 <= @dsl.time.hour }, :off],
