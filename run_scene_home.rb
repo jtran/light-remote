@@ -6,7 +6,7 @@ require 'sinatra'
 class SceneHome
   attr_accessor :state
 
-  STATES = [:off, :wake, :white, :flame, :off_till_morning]
+  STATES = [:auto, :off, :wake, :white, :flame, :off_till_morning]
 
   def initialize
     @state = :init
@@ -25,6 +25,8 @@ class SceneHome
     case @state
     when :init
       @dsl.black
+    when :auto
+      stop_holding
     when :off
       @dsl.fade_out
     when :wake
@@ -40,8 +42,8 @@ class SceneHome
 
   def triggers_for_state(state=@state)
     case state
-    when :init
-      STATES.map {|s| triggers_for_state(s) }.inject([]) {|all, ts| all.concat(ts) }
+    when :init, :auto
+      (STATES - [:auto]).map {|s| triggers_for_state(s) }.inject([]) {|all, ts| all.concat(ts) }
     when :off
       [ [lambda { @dsl.time.weekend? && 10 == @dsl.time.hour }, :wake],
         [lambda { @dsl.time.weekday? && 6 == @dsl.time.hour && 15 <= @dsl.time.min }, :wake],
